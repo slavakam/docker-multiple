@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t slavakam/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run slavakam/react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t slavakam/multi-client ./client
+  - docker build -t slavakam/multi-nginx ./nginx
+  - docker build -t slavakam/multi-server ./server
+  - docker build -t slavakam/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login - u "$DOCKER_ID" --password-stdin
+  - docker push slavakam/multi-client
+  - docker push slavakam/multi-nginx
+  - docker push slavakam/multi-server
+  - docker push slavakam/multi-worker
