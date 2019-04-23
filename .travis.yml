@@ -6,7 +6,7 @@ before_install:
   - docker build -t slavakam/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run slavakam/react-test npm run test -- --coverage
+  - docker run slavakam/react-test npm test -- --coverage
 
 after_success:
   - docker build -t slavakam/multi-client ./client
